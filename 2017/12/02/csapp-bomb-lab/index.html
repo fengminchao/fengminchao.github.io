@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="cs," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="看完了 csapp 的第三章关于汇编的内容，就做了下对应的 lab 练习一下，能把汇编练习设计成诸多拆弹关卡而且还有彩蛋关卡还是挺有意思的。 首先准备好环境及工具。 环境及工具 ubuntu 14.04.1 x86_64gdb 7.7.1objdump">
+<meta name="keywords" content="cs">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CSAPP Bomb Lab">
+<meta property="og:url" content="http://fengminchao.github.io/2017/12/02/csapp-bomb-lab/index.html">
+<meta property="og:site_name" content="YBAO&#39;s Blog">
+<meta property="og:description" content="看完了 csapp 的第三章关于汇编的内容，就做了下对应的 lab 练习一下，能把汇编练习设计成诸多拆弹关卡而且还有彩蛋关卡还是挺有意思的。 首先准备好环境及工具。 环境及工具 ubuntu 14.04.1 x86_64gdb 7.7.1objdump">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/006tNc79gy1fn2fcrp6etj30uk174aed.jpg">
+<meta property="og:image" content="https://ws2.sinaimg.cn/large/006tNc79gy1fn2ff6ch7bj30r20aejs0.jpg">
+<meta property="og:image" content="https://ws4.sinaimg.cn/large/006tNc79gy1fn2ffqxnkbj30ss01uq2u.jpg">
+<meta property="og:image" content="https://ws3.sinaimg.cn/large/006tNc79gy1fn2j0w1ppmj30r40qk76f.jpg">
+<meta property="og:image" content="https://ws4.sinaimg.cn/large/006tNc79gy1fn2jexiu7vj30ri10uwhv.jpg">
+<meta property="og:image" content="https://ws4.sinaimg.cn/large/006tNc79gy1fn2jh23ytfj30bm022t8j.jpg">
+<meta property="og:image" content="https://ws3.sinaimg.cn/large/006tKfTcly1fn3953vb8yj317602saa2.jpg">
+<meta property="og:image" content="https://ws3.sinaimg.cn/large/006tNc79gy1fmv5d2t9idj30ru0p8gnl.jpg">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/006tNc79gy1fmv5jhuytqj30da024mwz.jpg">
+<meta property="og:image" content="https://ws3.sinaimg.cn/large/006tKfTcly1fn39t161ezj30o402ydfu.jpg">
+<meta property="og:image" content="https://ws2.sinaimg.cn/large/006tNc79gy1fmv5r7vpsgj30rg0nqdhl.jpg">
+<meta property="og:image" content="https://ws3.sinaimg.cn/large/006tNc79gy1fmvem2isr2j30wi130juz.jpg">
+<meta property="og:image" content="https://ws2.sinaimg.cn/large/006tNc79gy1fmvf59vnfej312e01u749.jpg">
+<meta property="og:image" content="https://ws3.sinaimg.cn/large/006tNc79gy1fmvf52x3ssj30c201yweb.jpg">
+<meta property="og:image" content="https://ws2.sinaimg.cn/large/006tNc79gy1fmwbvp9gmkj30fy1e6wg8.jpg">
+<meta property="og:image" content="https://ws3.sinaimg.cn/large/006tNc79gy1fn2dj8ki3aj315m15eae0.jpg">
+<meta property="og:image" content="https://ws2.sinaimg.cn/large/006tNc79gy1fn2dnbvqtbj316o0y4q6d.jpg">
+<meta property="og:image" content="https://ws3.sinaimg.cn/large/006tNc79gy1fn2e0cj0tqj30ks06wq2z.jpg">
+<meta property="og:image" content="https://ws3.sinaimg.cn/large/006tNc79gy1fn2e5rf3cpj30qa0ngta6.jpg">
+<meta property="og:image" content="https://ws4.sinaimg.cn/large/006tNc79gy1fn2e9oyft5j309401wt8j.jpg">
+<meta property="og:image" content="https://ws4.sinaimg.cn/large/006tNc79gy1fn2eayhek4j30oe0lgt9z.jpg">
+<meta property="og:image" content="https://ws4.sinaimg.cn/large/006tNc79gy1fn2f4bqep2j30ec05i74a.jpg">
+<meta property="og:image" content="https://ws2.sinaimg.cn/large/006tNc79gy1fn2f6eyux3j30p00bcaaj.jpg">
+<meta property="og:updated_time" content="2018-01-03T04:03:31.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="CSAPP Bomb Lab">
+<meta name="twitter:description" content="看完了 csapp 的第三章关于汇编的内容，就做了下对应的 lab 练习一下，能把汇编练习设计成诸多拆弹关卡而且还有彩蛋关卡还是挺有意思的。 首先准备好环境及工具。 环境及工具 ubuntu 14.04.1 x86_64gdb 7.7.1objdump">
+<meta name="twitter:image" content="https://ws1.sinaimg.cn/large/006tNc79gy1fn2fcrp6etj30uk174aed.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"right","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://fengminchao.github.io/2017/12/02/csapp-bomb-lab/"/>
+
+
+
+
+
+  <title>CSAPP Bomb Lab | YBAO's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">YBAO's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://fengminchao.github.io/2017/12/02/csapp-bomb-lab/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="ybao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://avatars1.githubusercontent.com/u/14356334?v=4&s=460">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="YBAO's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">CSAPP Bomb Lab</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-02T11:04:08+08:00">
+                2017-12-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>看完了 csapp 的第三章关于汇编的内容，就做了下对应的 lab 练习一下，能把汇编练习设计成诸多拆弹关卡而且还有彩蛋关卡还是挺有意思的。</p>
+<p>首先准备好环境及工具。</p>
+<h2 id="环境及工具"><a href="#环境及工具" class="headerlink" title="环境及工具"></a>环境及工具</h2><blockquote>
+<p>ubuntu 14.04.1 x86_64<br>gdb 7.7.1<br>objdump   </p>
+</blockquote>
+<a id="more"></a>
+<h2 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h2><p>通过 wget 下载 bomb 压缩包</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">wget http://csapp.cs.cmu.edu/im/labs/bomblab.tar</div></pre></td></tr></table></figure>
+<p>解压缩</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">tar -xvf bomb.tar</div></pre></td></tr></table></figure>
+<p>反汇编执行文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">objdump -d bomb &gt; bomb.txt</div></pre></td></tr></table></figure>
+<p><img src="https://ws1.sinaimg.cn/large/006tNc79gy1fn2fcrp6etj30uk174aed.jpg" alt=""></p>
+<p>发现在main函数下面有6个以 phase 开头的函数，说明有6个关卡，搜索 <strong>phase</strong> 发现还有个隐藏关卡，估计是个彩蛋。</p>
+<p>那先从第一个关卡开始吧！</p>
+<h2 id="第一关"><a href="#第一关" class="headerlink" title="第一关"></a>第一关</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">gdb bomb</div><div class="line">b phase_1</div><div class="line">run</div><div class="line">disas</div></pre></td></tr></table></figure>
+<p><img src="https://ws2.sinaimg.cn/large/006tNc79gy1fn2ff6ch7bj30r20aejs0.jpg" alt=""></p>
+<p>发现它调用了一个 <strong>strings_not_equal</strong> 函数，把传进去的参数打印出来。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">x/s 0x402400</div></pre></td></tr></table></figure>
+<p><img src="https://ws4.sinaimg.cn/large/006tNc79gy1fn2ffqxnkbj30ss01uq2u.jpg" alt=""></p>
+<p>得到个字符串，这就是第一关答案。</p>
+<h2 id="第二关"><a href="#第二关" class="headerlink" title="第二关"></a>第二关</h2><p>接着来看第二关，先<strong>b phase_2</strong>打个断点然后运行。</p>
+<p><img src="https://ws3.sinaimg.cn/large/006tNc79gy1fn2j0w1ppmj30r40qk76f.jpg" alt=""></p>
+<p><strong>phase_2</strong> 这个函数先是栈指针下移分配一段内存空间，然后把 <strong>rsp</strong> 所指向的地址赋给 <strong>rsi</strong> ，接着调用读取六个数字的方法，可以知道这一关需要输入6个数字，根据 <strong>cmpl   $0x1,(%rsp)</strong> 可以知道第一个数为1。接着做的是把第二个数的地址存到 <strong>rbx</strong> 中，把最后一个数的地址存到 <strong>rbp</strong> 中，然后是把前一个数赋给 <strong>eax</strong> ，当前数要是前一个数的两倍，否则炸弹会爆炸，接着 <strong>rbp</strong> 后移4个字节指向下一个数，循环上述步骤直到遍历检查所有数字，所以这一关应该输入 <strong>1 2 4 8 16 32</strong> 。</p>
+<h2 id="第三关"><a href="#第三关" class="headerlink" title="第三关"></a>第三关</h2><p><img src="https://ws4.sinaimg.cn/large/006tNc79gy1fn2jexiu7vj30ri10uwhv.jpg" alt=""></p>
+<p>看到第三关先是对输入的数做了一个检查，那就先打印出要求输入的格式。</p>
+<p><img src="https://ws4.sinaimg.cn/large/006tNc79gy1fn2jh23ytfj30bm022t8j.jpg" alt=""></p>
+<p>发现下面是 switch 语句，跳转到的地址间的间隔为8个字节，<strong>rax</strong> 取值为0-7，打印出这个数组可得</p>
+<p><img src="https://ws3.sinaimg.cn/large/006tKfTcly1fn3953vb8yj317602saa2.jpg" alt=""></p>
+<p>gdb 打印以4个字节为一个单位所以可以得到0-7对应的跳转地址为</p>
+<ul>
+<li>0 -&gt; 0x400f7c</li>
+<li>1 -&gt; 0x400fb9</li>
+<li>2 -&gt; 0x400f83</li>
+<li>3 -&gt; 0x400f8a</li>
+<li>4 -&gt; 0x400f91</li>
+<li>5 -&gt; 0x400f98</li>
+<li>6 -&gt; 0x400f9f</li>
+<li>7 -&gt; 0x400fa6</li>
+</ul>
+<p>跳转完后第二个数有对应的赋值，把16进制的数转化为10进制的数后可以得到8组答案：</p>
+<ul>
+<li>0 207</li>
+<li>1 311</li>
+<li>2 707</li>
+<li>3 256</li>
+<li>4 389</li>
+<li>5 206</li>
+<li>6 682</li>
+<li>7 327</li>
+</ul>
+<h2 id="第四关"><a href="#第四关" class="headerlink" title="第四关"></a>第四关</h2><p><img src="https://ws3.sinaimg.cn/large/006tNc79gy1fmv5d2t9idj30ru0p8gnl.jpg" alt=""></p>
+<p>首先调用 “x/s 0x4025cf” 打印出输入格式</p>
+<p><img src="https://ws1.sinaimg.cn/large/006tNc79gy1fmv5jhuytqj30da024mwz.jpg" alt=""></p>
+<p>接着往下看，</p>
+<p><img src="https://ws3.sinaimg.cn/large/006tKfTcly1fn39t161ezj30o402ydfu.jpg" alt=""></p>
+<p>表明第一个数要小于等于14，接着&lt;+46&gt;,&lt;+51&gt;,&lt;+56&gt;在赋值要传入的参数，调用 func4 函数，stepi 进入此函数</p>
+<p><img src="https://ws2.sinaimg.cn/large/006tNc79gy1fmv5r7vpsgj30rg0nqdhl.jpg" alt=""></p>
+<p>这个函数返回会对返回结果做一个与运算，如果结果不为0仍然会爆炸，所以必须确保 func4 调用完成后返回0，根据传进来的参数为func4(int x,int y,int z)，y = 0,z = 14; 执行指令下去可得x&gt;=7时会跳转到<func4+36>处执行，接着x&lt;=7会跳转到<func4+57>增加栈指针返回，此时%rax存放的是0，如果不满足上面两个条件则会进入递归调用，递归调用后%rax的值就不为0了，所以第一个值为7。</func4+57></func4+36></p>
+<p>第二个值返回到phase_4的调用就可以得出为0，很好判断，所以这个关卡输入为 <strong>7 0</strong></p>
+<h2 id="第五关"><a href="#第五关" class="headerlink" title="第五关"></a>第五关</h2><p><img src="https://ws3.sinaimg.cn/large/006tNc79gy1fmvem2isr2j30wi130juz.jpg" alt=""></p>
+<p>这一关在<phase_5+24>有个指令调用了string_length方法，然后把返回值与6比较，如果相等的话会调转到<phase_5+112>的位置，不相等的话会爆炸，推测出输入的字符串长度为6，接着先把 %eax 赋为 0，跳转到<phase_5+41>,<phase_5+41> 至 <phase_5+74> 是个 dowhile 循环，当 <strong>%rax</strong> 的值等于 6 时退出，在循环开始时 <strong>%rbx</strong> 的值存的是 <strong>%rdi</strong> ,也就是传进去的字符串地址,这个循环内部顺序取出字符串的每个字节，把每个字节与 0xf 做相与运算，把运算结果作为偏移量取出地址为 0x4024b0 的字符串中对应的字符，之后把这个字符存到 <strong>0x10(%rsp,%rax,1)</strong> 的内存地址上。循环结束后，会把这个字符串与地址 0x40245e 上的做比较，不相等则会爆炸。</phase_5+74></phase_5+41></phase_5+41></phase_5+112></phase_5+24></p>
+<p>打印 0x4024b0 处的字符串</p>
+<p><img src="https://ws2.sinaimg.cn/large/006tNc79gy1fmvf59vnfej312e01u749.jpg" alt=""></p>
+<p>0x40245e 上的字符串，为”flyers”</p>
+<p><img src="https://ws3.sinaimg.cn/large/006tNc79gy1fmvf52x3ssj30c201yweb.jpg" alt=""></p>
+<p>现在要跟1111做相与运算得到各字符的偏移量，比如要得到结果为 ‘m’ 的字符，字符后四位必须为 0000 查看 ascii 对照码可以得到很多种答案，现在快速求出一种结果直接使用从字符 ‘a’ 开始方便运算。</p>
+<p>根据 maduiersnfotvbyl 得出各字符转换前的字符</p>
+<ul>
+<li>m &lt;- p</li>
+<li>a &lt;- a</li>
+<li>d &lt;- b</li>
+<li>u &lt;- c</li>
+<li>i &lt;- d</li>
+<li>e &lt;- e</li>
+<li>r &lt;- f</li>
+<li>s &lt;- g</li>
+<li>n &lt;- h</li>
+<li>f &lt;- i</li>
+<li>o &lt;- j</li>
+<li>t &lt;- k</li>
+<li>v &lt;- l</li>
+<li>b &lt;- m</li>
+<li>y &lt;- n</li>
+<li>l &lt;- o</li>
+</ul>
+<p>所以要使结果为 “flyers” ,输入的字符可以是 <strong>“ionefg”</strong></p>
+<h2 id="第六关"><a href="#第六关" class="headerlink" title="第六关"></a>第六关</h2><p><img src="https://ws2.sinaimg.cn/large/006tNc79gy1fmwbvp9gmkj30fy1e6wg8.jpg" alt=""></p>
+<p>汇编代码比较长，分开来一步步看，首先调用一个 <strong>read_six_numbers</strong> 的函数，可以知道输入的字符串为6个数字，接着一步是循环检验所有的数是否都小于等于6，接着循环把栈指针指向的内存段上的数组赋值为7-对应下标的值的数组。</p>
+<p>从<phase_6+163>开始，它得出了对应1,2,3,4,5,6的数值，并且打印0x6032d0,0x6032d8发现他是一个链表，不过在这个阶段还没链接好，等下一个阶段再进行链接，对应的结构体是一个数值，被7减后的输入值，结构体地址。</phase_6+163></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Node</span>&#123;</span></div><div class="line">    <span class="keyword">int</span> num;</div><div class="line">    <span class="keyword">int</span> seven_sub_input;</div><div class="line">    Node *next;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>打印出地址上所对应的值以及与被7减后输入值的对应关系，具体如下所示</p>
+<ul>
+<li>332 -&gt; 1</li>
+<li>168 -&gt; 2</li>
+<li>924 -&gt; 3</li>
+<li>691 -&gt; 4</li>
+<li>477 -&gt; 5</li>
+<li>443 -&gt; 6</li>
+</ul>
+<p>再接着就是链接各结点，然后判断 <strong>num</strong> 是否是从大到小排列,可得出 <strong>seven_sub_input</strong> 的顺序为 3,4,5,6,1,2 ，被7减之前的输入数为 4 3 2 1 6 5。</p>
+<h2 id="隐藏关卡"><a href="#隐藏关卡" class="headerlink" title="隐藏关卡"></a>隐藏关卡</h2><p>之前看到还有隐藏关卡在里面，那就先来看下如何进入隐藏关卡，先找到它在哪个位置被调用。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">vi bomb.txt</div></pre></td></tr></table></figure>
+<p><img src="https://ws3.sinaimg.cn/large/006tNc79gy1fn2dj8ki3aj315m15eae0.jpg" alt=""></p>
+<p>它是在phase_defused函数中被调用的，可以用 gdb 来打断点调试下。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">gdb bomb</div><div class="line">set args sol.txt</div><div class="line">b phase_defused</div><div class="line">run</div></pre></td></tr></table></figure></p>
+<p><img src="https://ws2.sinaimg.cn/large/006tNc79gy1fn2dnbvqtbj316o0y4q6d.jpg" alt=""></p>
+<p>大致看下这段反汇编代码，首先是要有6个字符串输入，再打个断电在<phase_defused+49>的地方，看它是在哪一关卡可以开启隐藏关卡</phase_defused+49></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">clear phase_defused</div><div class="line">b *0x00000000004015f5</div><div class="line">run</div><div class="line">disas</div></pre></td></tr></table></figure>
+<p>再打印几个内存地址上的字符串</p>
+<p><img src="https://ws3.sinaimg.cn/large/006tNc79gy1fn2e0cj0tqj30ks06wq2z.jpg" alt=""></p>
+<p><strong>0x603870</strong> 地址上是字符串 <strong>“7 0”</strong> ，<strong>0x402619</strong> 地址上是字符串 <strong>“%d %d %s”</strong> 可以知道是第四个关卡开启隐藏关卡，最后一个字符串要输对才能进入，至于对应的字符串就存在地址 <strong>0x402622</strong> 上面，为 <strong>“DrEvil”</strong> ,加到sol.txt里面开启隐藏关卡！</p>
+<p><img src="https://ws3.sinaimg.cn/large/006tNc79gy1fn2e5rf3cpj30qa0ngta6.jpg" alt=""></p>
+<p>经历了前面6关特别是第6关的拆弹，继续拆隐藏关卡的炸弹就轻松不少。这段汇编代码首先是读入输入的字符串，对输入的数字要求小于等于1001，然后把对应的数值赋到 <strong>%esi</strong> ,第一个参数赋值为 <strong>0x6030f0</strong> 这个内存地址，首先打印这个内存地址存的数值。</p>
+<p><img src="https://ws4.sinaimg.cn/large/006tNc79gy1fn2e9oyft5j309401wt8j.jpg" alt=""></p>
+<p>接着 <strong>stepi</strong> 进入 fun7 函数。</p>
+<p><img src="https://ws4.sinaimg.cn/large/006tNc79gy1fn2eayhek4j30oe0lgt9z.jpg" alt=""></p>
+<p>这个函数涉及到递归调用，为了更好地分析可以把对应的 C 代码写一下</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">fun7</span><span class="params">(Type* x,<span class="keyword">int</span> n)</span></span>&#123;</div><div class="line">    <span class="keyword">if</span>(x == null)&#123;</div><div class="line">        <span class="keyword">return</span> <span class="number">0xffffffff</span>;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">int</span> result;</div><div class="line">    <span class="keyword">if</span>((*x).value &lt;= n)&#123;</div><div class="line">        result = <span class="number">0</span>;</div><div class="line">        <span class="keyword">if</span>((*x).value == n)&#123;</div><div class="line">            <span class="keyword">return</span> result;              <span class="comment">//1</span></div><div class="line">        &#125;<span class="keyword">else</span>&#123;</div><div class="line">            x = (*x).second_node;</div><div class="line">            <span class="keyword">return</span> <span class="number">2</span> * fun7(x,n) + <span class="number">1</span>;   <span class="comment">//2</span></div><div class="line">        &#125;</div><div class="line">    &#125;<span class="keyword">else</span>&#123;</div><div class="line">        x = (*x).first_node;</div><div class="line">        <span class="keyword">return</span> <span class="number">2</span> * fun7(x,n);           <span class="comment">//3</span></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>因为打印出 <strong>rdi</strong> 后8个字节和后16个字节发现他们是一个地址，可以想到的结构是二叉树，所以 x 是个结构体指针，结合之前 <strong>secret_phase</strong> 的汇编代码可以知道只有返回值为 <strong>2</strong> 是才不会引爆炸弹，所以为了让 <strong>%rax</strong> 的值为2，需要递归调用顺序为 <strong>3,2,1</strong> ，</p>
+<p>按照汇编代码中取地址位数的方式打印出对应地址所指向的地址和值可得</p>
+<p><img src="https://ws4.sinaimg.cn/large/006tNc79gy1fn2f4bqep2j30ec05i74a.jpg" alt=""></p>
+<p>所以答案是22！</p>
+<p><img src="https://ws2.sinaimg.cn/large/006tNc79gy1fn2f6eyux3j30p00bcaaj.jpg" alt=""></p>
+<p>至此所有的炸弹拆除完毕。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/cs/" rel="tag"># cs</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/11/23/Internship-experiences-md/" rel="next" title="小米实习见闻">
+                <i class="fa fa-chevron-left"></i> 小米实习见闻
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="https://avatars1.githubusercontent.com/u/14356334?v=4&s=460"
+               alt="ybao" />
+          <p class="site-author-name" itemprop="name">ybao</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">4</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/fengminchao" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                    
+                      GitHub
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/5258752805/profile?topnav=1&wvr=6" target="_blank" title="微博">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                    
+                      微博
+                    
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#环境及工具"><span class="nav-number">1.</span> <span class="nav-text">环境及工具</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#准备"><span class="nav-number">2.</span> <span class="nav-text">准备</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第一关"><span class="nav-number">3.</span> <span class="nav-text">第一关</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第二关"><span class="nav-number">4.</span> <span class="nav-text">第二关</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第三关"><span class="nav-number">5.</span> <span class="nav-text">第三关</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第四关"><span class="nav-number">6.</span> <span class="nav-text">第四关</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第五关"><span class="nav-number">7.</span> <span class="nav-text">第五关</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第六关"><span class="nav-number">8.</span> <span class="nav-text">第六关</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#隐藏关卡"><span class="nav-number">9.</span> <span class="nav-text">隐藏关卡</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">ybao</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
