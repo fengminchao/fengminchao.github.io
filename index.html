@@ -270,6 +270,142 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://fengminchao.github.io/2018/05/26/常用的编码方式——Base64编码和Hex编码/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="ybao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://avatars1.githubusercontent.com/u/14356334?v=4&s=460">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="YBAO's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/05/26/常用的编码方式——Base64编码和Hex编码/" itemprop="url">常用的编码方式——Base64编码和Hex编码</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-05-26T15:44:40+08:00">
+                2018-05-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/05/26/常用的编码方式——Base64编码和Hex编码/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/05/26/常用的编码方式——Base64编码和Hex编码/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p>在开发加密解密数据的时候碰到需要把加密好的 byte 数组转换成 String 对象用于网络传输的需求，如果把字节数组直接转换成 UTF-8 等编码方式的话肯定会存在某些编码没有对应的字符，在传输过程中会遗漏数据。这时就可以通过常用的二进制数据编码方式 Base64 编码或者 Hex 编码来实现。</p>
+<h2 id="Hex编码"><a href="#Hex编码" class="headerlink" title="Hex编码"></a>Hex编码</h2><p>因为一个字节中存在8个 bit可以表示256个字符，而 ASCII 码只能表示0-127种字符，为了能完整地表示一个字节，可以将二进制数据转换为十六进制数据的方式来实现。所以 Hex 编码也被称作为 Base16 编码，相比于原先8位表示一个字节，Hex 编码能够只用2位表示一个字节。Hex 编码最常用于二进制文件查看时展示的编码，如 Hex Fiend 就可以支持查看二进制文件。</p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/05/26/常用的编码方式——Base64编码和Hex编码/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://fengminchao.github.io/2017/12/02/csapp-bomb-lab/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1517,145 +1653,13 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://fengminchao.github.io/2016/06/17/view的滑动与事件分发/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="ybao">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://avatars1.githubusercontent.com/u/14356334?v=4&s=460">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="YBAO's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/06/17/view的滑动与事件分发/" itemprop="url">view的滑动与事件分发</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-06-17T00:00:00+08:00">
-                2016-06-17
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2016/06/17/view的滑动与事件分发/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2016/06/17/view的滑动与事件分发/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h2 id="view的滑动方式"><a href="#view的滑动方式" class="headerlink" title="view的滑动方式"></a>view的滑动方式</h2><h3 id="通过Scroller来进行滑动"><a href="#通过Scroller来进行滑动" class="headerlink" title="通过Scroller来进行滑动"></a>通过Scroller来进行滑动</h3><p>view 自身就提供了两个方法通过Scroller来实现滑动：scrollTo和scrollBy ,而scrollBy本身也是通过调用scrollTo 来实现，scrollTo传入的参数是想要滑动到的目的坐标 x，y ，这里的 x，y并不是view 中内容相对于 view 位置原点的坐标，这也是很多人会认为为什么这里的移动规则怎么会是相反的，可以结合着源码看下</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">scrollTo</span><span class="params">(<span class="keyword">int</span> x ,<span class="keyword">int</span> y)</span></span>&#123;</div><div class="line">	<span class="keyword">if</span>(mScrollX != x || mScrollY != y)&#123;</div><div class="line">	<span class="keyword">int</span> oldX = mScrollX;</div><div class="line">	<span class="keyword">int</span> oldY = mScrollY;</div><div class="line">	mScrollX = x;</div><div class="line">	mScrollY = y;</div><div class="line">	invalidateParentCaches();</div><div class="line">	onScrollChanged(mScrollX,mScrollY,oldX,oldY);</div><div class="line">	<span class="keyword">if</span>(!awakenScrollBars())&#123;</div><div class="line">			postInvalidateOnAnimation();</div><div class="line">		&#125;</div><div class="line">	&#125;		</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">scrollBy</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y)</span></span>&#123;</div><div class="line">	scrollTo(mScrollX + x,mScrollY + y);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2016/06/17/view的滑动与事件分发/#more" rel="contents">
-              Read more &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
+  <nav class="pagination">
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
+  </nav>
+
 
 
           </div>
@@ -1699,7 +1703,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-count">11</span>
                 <span class="site-state-item-name">posts</span>
               </a>
             </div>

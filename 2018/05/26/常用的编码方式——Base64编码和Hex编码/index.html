@@ -78,7 +78,7 @@
 <link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="tools," />
+  <meta name="keywords" content="cs," />
 
 
 
@@ -94,18 +94,22 @@
 
 
 
-<meta name="description" content="网络调试 postman  开发 Android Studio(建议把官方文档浏览一遍,可能会发现以前没发现的功能) AS 插件 IdeaVim Android ButterKnife Zelezny Android File Grouping Android Material Design Icon Generator Dash Freeline Plugin GsonFormat Select">
-<meta name="keywords" content="tools">
+<meta name="description" content="在开发加密解密数据的时候碰到需要把加密好的 byte 数组转换成 String 对象用于网络传输的需求，如果把字节数组直接转换成 UTF-8 等编码方式的话肯定会存在某些编码没有对应的字符，在传输过程中会遗漏数据。这时就可以通过常用的二进制数据编码方式 Base64 编码或者 Hex 编码来实现。 Hex编码因为一个字节中存在8个 bit可以表示256个字符，而 ASCII 码只能表示0-127种">
+<meta name="keywords" content="cs">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Android开发工具">
-<meta property="og:url" content="http://fengminchao.github.io/2016/12/11/Android开发工具/index.html">
+<meta property="og:title" content="常用的编码方式——Base64编码和Hex编码">
+<meta property="og:url" content="http://fengminchao.github.io/2018/05/26/常用的编码方式——Base64编码和Hex编码/index.html">
 <meta property="og:site_name" content="YBAO&#39;s Blog">
-<meta property="og:description" content="网络调试 postman  开发 Android Studio(建议把官方文档浏览一遍,可能会发现以前没发现的功能) AS 插件 IdeaVim Android ButterKnife Zelezny Android File Grouping Android Material Design Icon Generator Dash Freeline Plugin GsonFormat Select">
+<meta property="og:description" content="在开发加密解密数据的时候碰到需要把加密好的 byte 数组转换成 String 对象用于网络传输的需求，如果把字节数组直接转换成 UTF-8 等编码方式的话肯定会存在某些编码没有对应的字符，在传输过程中会遗漏数据。这时就可以通过常用的二进制数据编码方式 Base64 编码或者 Hex 编码来实现。 Hex编码因为一个字节中存在8个 bit可以表示256个字符，而 ASCII 码只能表示0-127种">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2018-01-03T04:04:00.015Z">
+<meta property="og:image" content="https://ws3.sinaimg.cn/large/006tKfTcgy1frot74qq1zj30p20qmgma.jpg">
+<meta property="og:image" content="https://ws4.sinaimg.cn/large/006tKfTcgy1frotaa5yyhj310209wdg4.jpg">
+<meta property="og:image" content="https://ws4.sinaimg.cn/large/006tKfTcgy1frotjva7fhj30yy08u3yl.jpg">
+<meta property="og:updated_time" content="2018-05-26T09:14:24.292Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Android开发工具">
-<meta name="twitter:description" content="网络调试 postman  开发 Android Studio(建议把官方文档浏览一遍,可能会发现以前没发现的功能) AS 插件 IdeaVim Android ButterKnife Zelezny Android File Grouping Android Material Design Icon Generator Dash Freeline Plugin GsonFormat Select">
+<meta name="twitter:title" content="常用的编码方式——Base64编码和Hex编码">
+<meta name="twitter:description" content="在开发加密解密数据的时候碰到需要把加密好的 byte 数组转换成 String 对象用于网络传输的需求，如果把字节数组直接转换成 UTF-8 等编码方式的话肯定会存在某些编码没有对应的字符，在传输过程中会遗漏数据。这时就可以通过常用的二进制数据编码方式 Base64 编码或者 Hex 编码来实现。 Hex编码因为一个字节中存在8个 bit可以表示256个字符，而 ASCII 码只能表示0-127种">
+<meta name="twitter:image" content="https://ws3.sinaimg.cn/large/006tKfTcgy1frot74qq1zj30p20qmgma.jpg">
 
 
 
@@ -134,13 +138,13 @@
 
 
 
-  <link rel="canonical" href="http://fengminchao.github.io/2016/12/11/Android开发工具/"/>
+  <link rel="canonical" href="http://fengminchao.github.io/2018/05/26/常用的编码方式——Base64编码和Hex编码/"/>
 
 
 
 
 
-  <title>Android开发工具 | YBAO's Blog</title>
+  <title>常用的编码方式——Base64编码和Hex编码 | YBAO's Blog</title>
   
 
 
@@ -273,7 +277,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://fengminchao.github.io/2016/12/11/Android开发工具/">
+    <link itemprop="mainEntityOfPage" href="http://fengminchao.github.io/2018/05/26/常用的编码方式——Base64编码和Hex编码/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="ybao">
@@ -290,7 +294,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Android开发工具</h1>
+          <h1 class="post-title" itemprop="name headline">常用的编码方式——Base64编码和Hex编码</h1>
         
 
         <div class="post-meta">
@@ -302,8 +306,8 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-11T17:25:42+08:00">
-                2016-12-11
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-05-26T15:44:40+08:00">
+                2018-05-26
               </time>
             
 
@@ -321,9 +325,9 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2016/12/11/Android开发工具/#comments" itemprop="discussionUrl">
+                <a href="/2018/05/26/常用的编码方式——Base64编码和Hex编码/#comments" itemprop="discussionUrl">
                   <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2016/12/11/Android开发工具/" itemprop="commentCount"></span>
+                        data-disqus-identifier="2018/05/26/常用的编码方式——Base64编码和Hex编码/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -351,65 +355,20 @@
       
 
       
-        <h2 id="网络调试"><a href="#网络调试" class="headerlink" title="网络调试"></a>网络调试</h2><ul>
-<li>postman</li>
-</ul>
-<h2 id="开发"><a href="#开发" class="headerlink" title="开发"></a>开发</h2><ul>
-<li>Android Studio(建议把官方文档浏览一遍,可能会发现以前没发现的功能)</li>
-<li>AS 插件</li>
-<li>IdeaVim</li>
-<li>Android ButterKnife Zelezny</li>
-<li>Android File Grouping</li>
-<li>Android Material Design Icon Generator</li>
-<li>Dash</li>
-<li>Freeline Plugin</li>
-<li>GsonFormat</li>
-<li>SelectorChapek for Android</li>
-<li>Freeline(增量编译神器,极大提高打包速度,接入简单,兼容 Gradle 插件,现阶段在集成 Data Binding 和Dagger的项目中还存在一些问题)</li>
-<li>Genymotion</li>
-<li>Live Templates</li>
-<li>Android tools</li>
-</ul>
+        <p>在开发加密解密数据的时候碰到需要把加密好的 byte 数组转换成 String 对象用于网络传输的需求，如果把字节数组直接转换成 UTF-8 等编码方式的话肯定会存在某些编码没有对应的字符，在传输过程中会遗漏数据。这时就可以通过常用的二进制数据编码方式 Base64 编码或者 Hex 编码来实现。</p>
+<h2 id="Hex编码"><a href="#Hex编码" class="headerlink" title="Hex编码"></a>Hex编码</h2><p>因为一个字节中存在8个 bit可以表示256个字符，而 ASCII 码只能表示0-127种字符，为了能完整地表示一个字节，可以将二进制数据转换为十六进制数据的方式来实现。所以 Hex 编码也被称作为 Base16 编码，相比于原先8位表示一个字节，Hex 编码能够只用2位表示一个字节。Hex 编码最常用于二进制文件查看时展示的编码，如 Hex Fiend 就可以支持查看二进制文件。</p>
 <a id="more"></a>
-<h2 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h2><ul>
-<li>Junit</li>
-<li>Mockito</li>
-<li>Appium</li>
-<li>Espresso Test Recorder</li>
-<li>Monkey</li>
-</ul>
-<h2 id="集成"><a href="#集成" class="headerlink" title="集成"></a>集成</h2><ul>
-<li>Jenkins</li>
-</ul>
-<h2 id="包管理"><a href="#包管理" class="headerlink" title="包管理"></a>包管理</h2><ul>
-<li>Bintray</li>
-<li>Jitpack</li>
-</ul>
-<h2 id="版本管理"><a href="#版本管理" class="headerlink" title="版本管理"></a>版本管理</h2><ul>
-<li>GitHub</li>
-<li>Coding</li>
-</ul>
-<h2 id="崩溃监控"><a href="#崩溃监控" class="headerlink" title="崩溃监控"></a>崩溃监控</h2><ul>
-<li>Bugly</li>
-</ul>
-<h2 id="热修复"><a href="#热修复" class="headerlink" title="热修复"></a>热修复</h2><ul>
-<li>Andfix</li>
-<li>Tinker</li>
-</ul>
-<h2 id="抓包"><a href="#抓包" class="headerlink" title="抓包"></a>抓包</h2><ul>
-<li>Charles (Mac)</li>
-<li>Packet Capture (Android)</li>
-</ul>
-<h2 id="源码阅读"><a href="#源码阅读" class="headerlink" title="源码阅读"></a>源码阅读</h2><ul>
-<li>Android SDK Search</li>
-<li>Understand</li>
-</ul>
-<h2 id="一些小工具"><a href="#一些小工具" class="headerlink" title="一些小工具"></a>一些小工具</h2><ul>
-<li>Sip(Mac 取色)</li>
-<li>Pixolor(Android 取色)</li>
-<li>Zeplin</li>
-<li>iPic</li>
-<li>Alfred Workflow</li>
+<h2 id="Base64编码"><a href="#Base64编码" class="headerlink" title="Base64编码"></a>Base64编码</h2><p>Base64编码是通过64个字符来表示二进制数据，64个字符表示二进制数据只能表示6位，所以他可以通过4个 Base64 的字符来表示3个字节，如下是 Base64 的字符编码表</p>
+<p><img src="https://ws3.sinaimg.cn/large/006tKfTcgy1frot74qq1zj30p20qmgma.jpg" alt=""></p>
+<p>举个 Base64 编码的例子，如要表示字符串 Man ，先将各个字符转换为二进制形式，也就是 01001101 01100001 01101110,再以6位为单位进行分割，如果表示的字符串长度不为3的倍数，也就是存在缺位时则以0填充。得到各个部分的十进制表示为19,22,5,46,依照这个索引可以得出对应的 Base64 字符，为T,W,F,u。</p>
+<p><img src="https://ws4.sinaimg.cn/large/006tKfTcgy1frotaa5yyhj310209wdg4.jpg" alt=""></p>
+<p>像下面字符串长度不为3的倍数时，Base64编码会出现=。</p>
+<p><img src="https://ws4.sinaimg.cn/large/006tKfTcgy1frotjva7fhj30yy08u3yl.jpg" alt=""></p>
+<p>Base64 编码使用4个字符便能表示3个字节，也就是会冗余出1/3的长度，不过其作为压缩比较高以及简单的编码方式能够广泛运用于网络传播的密钥文件等的编码，有时甚至可以直接来表示小的图片，音频文件。Base64常被误用于数据加密，其实只要看到数据末尾是否有=符号就能判别是否使用了 Base64 加密便破解出来。只有不能被快速计算破解出来的数据加密方式才是严格意义上的加密。</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a href="https://www.zhihu.com/question/36306744" target="_blank" rel="external">为什么要用 Base64 加密，有哪些情景需求</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Base64" target="_blank" rel="external">Base64 wiki</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Hexadecimal" target="_blank" rel="external">Hexadecimal wiki</a></li>
 </ul>
 
       
@@ -428,7 +387,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/tools/" rel="tag"># tools</a>
+            <a href="/tags/cs/" rel="tag"># cs</a>
           
         </div>
       
@@ -441,8 +400,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/08/31/ccnubox-problem-summary/" rel="next" title="校园通问题总结">
-                <i class="fa fa-chevron-left"></i> 校园通问题总结
+              <a href="/2017/12/02/csapp-bomb-lab/" rel="next" title="CSAPP Bomb Lab">
+                <i class="fa fa-chevron-left"></i> CSAPP Bomb Lab
               </a>
             
           </div>
@@ -450,10 +409,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2016/12/15/记第一次参加GDD/" rel="prev" title="记第一次参加GDD">
-                记第一次参加GDD <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -609,7 +564,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#网络调试"><span class="nav-number">1.</span> <span class="nav-text">网络调试</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#开发"><span class="nav-number">2.</span> <span class="nav-text">开发</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#测试"><span class="nav-number">3.</span> <span class="nav-text">测试</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#集成"><span class="nav-number">4.</span> <span class="nav-text">集成</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#包管理"><span class="nav-number">5.</span> <span class="nav-text">包管理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#版本管理"><span class="nav-number">6.</span> <span class="nav-text">版本管理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#崩溃监控"><span class="nav-number">7.</span> <span class="nav-text">崩溃监控</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#热修复"><span class="nav-number">8.</span> <span class="nav-text">热修复</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#抓包"><span class="nav-number">9.</span> <span class="nav-text">抓包</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#源码阅读"><span class="nav-number">10.</span> <span class="nav-text">源码阅读</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#一些小工具"><span class="nav-number">11.</span> <span class="nav-text">一些小工具</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Hex编码"><span class="nav-number">1.</span> <span class="nav-text">Hex编码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Base64编码"><span class="nav-number">2.</span> <span class="nav-text">Base64编码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">3.</span> <span class="nav-text">参考</span></a></li></ol></div>
             
 
           </div>
@@ -752,9 +707,9 @@
     
       <script type="text/javascript">
         var disqus_config = function () {
-          this.page.url = 'http://fengminchao.github.io/2016/12/11/Android开发工具/';
-          this.page.identifier = '2016/12/11/Android开发工具/';
-          this.page.title = 'Android开发工具';
+          this.page.url = 'http://fengminchao.github.io/2018/05/26/常用的编码方式——Base64编码和Hex编码/';
+          this.page.identifier = '2018/05/26/常用的编码方式——Base64编码和Hex编码/';
+          this.page.title = '常用的编码方式——Base64编码和Hex编码';
         };
         var d = document, s = d.createElement('script');
         s.src = 'https://ybao.disqus.com/embed.js';

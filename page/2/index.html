@@ -96,7 +96,7 @@
 
 <meta property="og:type" content="website">
 <meta property="og:title" content="YBAO&#39;s Blog">
-<meta property="og:url" content="http://fengminchao.github.io/archives/2017/03/index.html">
+<meta property="og:url" content="http://fengminchao.github.io/page/2/index.html">
 <meta property="og:site_name" content="YBAO&#39;s Blog">
 <meta property="og:locale" content="en">
 <meta name="twitter:card" content="summary">
@@ -129,13 +129,13 @@
 
 
 
-  <link rel="canonical" href="http://fengminchao.github.io/archives/2017/03/"/>
+  <link rel="canonical" href="http://fengminchao.github.io/page/2/"/>
 
 
 
 
 
-  <title>Archive | YBAO's Blog</title>
+  <title>YBAO's Blog</title>
   
 
 
@@ -160,7 +160,9 @@
     
   
 
-  <div class="container sidebar-position-right  page-archive  ">
+  <div class="container sidebar-position-right 
+   page-home 
+ ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -253,74 +255,150 @@
         <div class="content-wrap">
           <div id="content" class="content">
             
-
-  
-  
-  
-  <div class="post-block archive">
-    <div id="posts" class="posts-collapse">
-      <span class="archive-move-on"></span>
-
-      <span class="archive-page-counter">
-        
-        
-        
-          
-        
-        Um..! 11 posts in total. Keep on posting.
-      </span>
-
+  <section id="posts" class="posts-expand">
+    
       
 
-        
-        
-        
+  
 
-        
-          
-          <div class="collection-title">
-            <h2 class="archive-year motion-element" id="archive-year-2017">2017</h2>
-          </div>
-        
-        
-
-        
+  
+  
+  
 
   <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://fengminchao.github.io/2016/06/17/view的滑动与事件分发/">
 
-      <h2 class="post-title">
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="ybao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://avatars1.githubusercontent.com/u/14356334?v=4&s=460">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="YBAO's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
         
-            <a class="post-title-link" href="/2017/03/24/Java中的代理模式/" itemprop="url">
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/06/17/view的滑动与事件分发/" itemprop="url">view的滑动与事件分发</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
               
-                <span itemprop="name">Java中的代理模式</span>
+                <span class="post-meta-item-text">Posted on</span>
               
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-06-17T00:00:00+08:00">
+                2016-06-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2016/06/17/view的滑动与事件分发/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2016/06/17/view的滑动与事件分发/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h2 id="view的滑动方式"><a href="#view的滑动方式" class="headerlink" title="view的滑动方式"></a>view的滑动方式</h2><h3 id="通过Scroller来进行滑动"><a href="#通过Scroller来进行滑动" class="headerlink" title="通过Scroller来进行滑动"></a>通过Scroller来进行滑动</h3><p>view 自身就提供了两个方法通过Scroller来实现滑动：scrollTo和scrollBy ,而scrollBy本身也是通过调用scrollTo 来实现，scrollTo传入的参数是想要滑动到的目的坐标 x，y ，这里的 x，y并不是view 中内容相对于 view 位置原点的坐标，这也是很多人会认为为什么这里的移动规则怎么会是相反的，可以结合着源码看下</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">scrollTo</span><span class="params">(<span class="keyword">int</span> x ,<span class="keyword">int</span> y)</span></span>&#123;</div><div class="line">	<span class="keyword">if</span>(mScrollX != x || mScrollY != y)&#123;</div><div class="line">	<span class="keyword">int</span> oldX = mScrollX;</div><div class="line">	<span class="keyword">int</span> oldY = mScrollY;</div><div class="line">	mScrollX = x;</div><div class="line">	mScrollY = y;</div><div class="line">	invalidateParentCaches();</div><div class="line">	onScrollChanged(mScrollX,mScrollY,oldX,oldY);</div><div class="line">	<span class="keyword">if</span>(!awakenScrollBars())&#123;</div><div class="line">			postInvalidateOnAnimation();</div><div class="line">		&#125;</div><div class="line">	&#125;		</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">scrollBy</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y)</span></span>&#123;</div><div class="line">	scrollTo(mScrollX + x,mScrollY + y);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2016/06/17/view的滑动与事件分发/#more" rel="contents">
+              Read more &raquo;
             </a>
+          </div>
+          <!--/noindex-->
         
-      </h2>
+      
+    </div>
+    
+    
+    
 
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2017-03-24T17:26:42+08:00"
-              content="2017-03-24" >
-          03-24
-        </time>
-      </div>
+    
 
-    </header>
-  </article>
+    
 
+    
 
+    <footer class="post-footer">
+      
 
       
 
-    </div>
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
   </div>
   
   
   
+  </article>
+
+
+    
+  </section>
 
   
+  <nav class="pagination">
+    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span>
+  </nav>
 
 
 
@@ -540,12 +618,10 @@
   
 
   
-  
-    <script type="text/javascript" id="motion.page.archive">
-      $('.archive-year').velocity('transition.slideLeftIn');
-    </script>
-  
+    <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
 
+  
 
   
 
