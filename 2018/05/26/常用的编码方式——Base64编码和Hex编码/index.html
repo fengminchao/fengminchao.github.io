@@ -102,14 +102,14 @@
 <meta property="og:site_name" content="YBAO&#39;s Blog">
 <meta property="og:description" content="在开发加密解密数据的时候碰到需要把加密好的 byte 数组转换成 String 对象用于网络传输的需求，如果把字节数组直接转换成 UTF-8 等编码方式的话肯定会存在某些编码没有对应的字符，在传输过程中会遗漏数据。这时就可以通过常用的二进制数据编码方式 Base64 编码或者 Hex 编码来实现。 Hex编码因为一个字节中存在8个 bit可以表示256个字符，而 ASCII 码只能表示0-127种">
 <meta property="og:locale" content="en">
-<meta property="og:image" content="https://ws3.sinaimg.cn/large/006tKfTcgy1frot74qq1zj30p20qmgma.jpg">
-<meta property="og:image" content="https://ws4.sinaimg.cn/large/006tKfTcgy1frotaa5yyhj310209wdg4.jpg">
-<meta property="og:image" content="https://ws4.sinaimg.cn/large/006tKfTcgy1frotjva7fhj30yy08u3yl.jpg">
-<meta property="og:updated_time" content="2018-05-26T09:14:24.292Z">
+<meta property="og:image" content="https://raw.githubusercontent.com/fengminchao/img/master/20190617144239.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/fengminchao/img/master/20190617144302.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/fengminchao/img/master/20190617144322.png">
+<meta property="og:updated_time" content="2019-06-17T06:43:31.306Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="常用的编码方式——Base64编码和Hex编码">
 <meta name="twitter:description" content="在开发加密解密数据的时候碰到需要把加密好的 byte 数组转换成 String 对象用于网络传输的需求，如果把字节数组直接转换成 UTF-8 等编码方式的话肯定会存在某些编码没有对应的字符，在传输过程中会遗漏数据。这时就可以通过常用的二进制数据编码方式 Base64 编码或者 Hex 编码来实现。 Hex编码因为一个字节中存在8个 bit可以表示256个字符，而 ASCII 码只能表示0-127种">
-<meta name="twitter:image" content="https://ws3.sinaimg.cn/large/006tKfTcgy1frot74qq1zj30p20qmgma.jpg">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/fengminchao/img/master/20190617144239.png">
 
 
 
@@ -359,11 +359,11 @@
 <h2 id="Hex编码"><a href="#Hex编码" class="headerlink" title="Hex编码"></a>Hex编码</h2><p>因为一个字节中存在8个 bit可以表示256个字符，而 ASCII 码只能表示0-127种字符，为了能完整地表示一个字节，可以将二进制数据转换为十六进制数据的方式来实现。所以 Hex 编码也被称作为 Base16 编码，相比于原先8位表示一个字节，Hex 编码能够只用2位表示一个字节。Hex 编码最常用于二进制文件查看时展示的编码，如 Hex Fiend 就可以支持查看二进制文件。</p>
 <a id="more"></a>
 <h2 id="Base64编码"><a href="#Base64编码" class="headerlink" title="Base64编码"></a>Base64编码</h2><p>Base64编码是通过64个字符来表示二进制数据，64个字符表示二进制数据只能表示6位，所以他可以通过4个 Base64 的字符来表示3个字节，如下是 Base64 的字符编码表</p>
-<p><img src="https://ws3.sinaimg.cn/large/006tKfTcgy1frot74qq1zj30p20qmgma.jpg" alt=""></p>
+<p><img src="https://raw.githubusercontent.com/fengminchao/img/master/20190617144239.png" alt=""></p>
 <p>举个 Base64 编码的例子，如要表示字符串 Man ，先将各个字符转换为二进制形式，也就是 01001101 01100001 01101110,再以6位为单位进行分割，如果表示的字符串长度不为3的倍数，也就是存在缺位时则以0填充。得到各个部分的十进制表示为19,22,5,46,依照这个索引可以得出对应的 Base64 字符，为T,W,F,u。</p>
-<p><img src="https://ws4.sinaimg.cn/large/006tKfTcgy1frotaa5yyhj310209wdg4.jpg" alt=""></p>
+<p><img src="https://raw.githubusercontent.com/fengminchao/img/master/20190617144302.png" alt=""></p>
 <p>像下面字符串长度不为3的倍数时，Base64编码会出现=。</p>
-<p><img src="https://ws4.sinaimg.cn/large/006tKfTcgy1frotjva7fhj30yy08u3yl.jpg" alt=""></p>
+<p><img src="https://raw.githubusercontent.com/fengminchao/img/master/20190617144322.png" alt=""></p>
 <p>Base64 编码使用4个字符便能表示3个字节，也就是会冗余出1/3的长度，不过其作为压缩比较高以及简单的编码方式能够广泛运用于网络传播的密钥文件等的编码，有时甚至可以直接来表示小的图片，音频文件。Base64常被误用于数据加密，其实只要看到数据末尾是否有=符号就能判别是否使用了 Base64 加密便破解出来。只有不能被快速计算破解出来的数据加密方式才是严格意义上的加密。</p>
 <h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
 <li><a href="https://www.zhihu.com/question/36306744" target="_blank" rel="external">为什么要用 Base64 加密，有哪些情景需求</a></li>
@@ -587,7 +587,7 @@
         <div class="copyright" >
   
   &copy; 
-  <span itemprop="copyrightYear">2018</span>
+  <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

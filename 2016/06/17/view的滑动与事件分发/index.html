@@ -102,12 +102,12 @@
 <meta property="og:site_name" content="YBAO&#39;s Blog">
 <meta property="og:description" content="view的滑动方式通过Scroller来进行滑动view 自身就提供了两个方法通过Scroller来实现滑动：scrollTo和scrollBy ,而scrollBy本身也是通过调用scrollTo 来实现，scrollTo传入的参数是想要滑动到的目的坐标 x，y ，这里的 x，y并不是view 中内容相对于 view 位置原点的坐标，这也是很多人会认为为什么这里的移动规则怎么会是相反的，可以结合">
 <meta property="og:locale" content="en">
-<meta property="og:image" content="http://7xtask.com2.z0.glb.clouddn.com/view%20%E7%9A%84%E6%BB%91%E5%8A%A8.png">
-<meta property="og:updated_time" content="2018-01-03T04:04:52.000Z">
+<meta property="og:image" content="https://raw.githubusercontent.com/fengminchao/img/master/view.png">
+<meta property="og:updated_time" content="2019-06-17T06:42:14.955Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="view的滑动与事件分发">
 <meta name="twitter:description" content="view的滑动方式通过Scroller来进行滑动view 自身就提供了两个方法通过Scroller来实现滑动：scrollTo和scrollBy ,而scrollBy本身也是通过调用scrollTo 来实现，scrollTo传入的参数是想要滑动到的目的坐标 x，y ，这里的 x，y并不是view 中内容相对于 view 位置原点的坐标，这也是很多人会认为为什么这里的移动规则怎么会是相反的，可以结合">
-<meta name="twitter:image" content="http://7xtask.com2.z0.glb.clouddn.com/view%20%E7%9A%84%E6%BB%91%E5%8A%A8.png">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/fengminchao/img/master/view.png">
 
 
 
@@ -356,7 +356,7 @@
         <h2 id="view的滑动方式"><a href="#view的滑动方式" class="headerlink" title="view的滑动方式"></a>view的滑动方式</h2><h3 id="通过Scroller来进行滑动"><a href="#通过Scroller来进行滑动" class="headerlink" title="通过Scroller来进行滑动"></a>通过Scroller来进行滑动</h3><p>view 自身就提供了两个方法通过Scroller来实现滑动：scrollTo和scrollBy ,而scrollBy本身也是通过调用scrollTo 来实现，scrollTo传入的参数是想要滑动到的目的坐标 x，y ，这里的 x，y并不是view 中内容相对于 view 位置原点的坐标，这也是很多人会认为为什么这里的移动规则怎么会是相反的，可以结合着源码看下</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">scrollTo</span><span class="params">(<span class="keyword">int</span> x ,<span class="keyword">int</span> y)</span></span>&#123;</div><div class="line">	<span class="keyword">if</span>(mScrollX != x || mScrollY != y)&#123;</div><div class="line">	<span class="keyword">int</span> oldX = mScrollX;</div><div class="line">	<span class="keyword">int</span> oldY = mScrollY;</div><div class="line">	mScrollX = x;</div><div class="line">	mScrollY = y;</div><div class="line">	invalidateParentCaches();</div><div class="line">	onScrollChanged(mScrollX,mScrollY,oldX,oldY);</div><div class="line">	<span class="keyword">if</span>(!awakenScrollBars())&#123;</div><div class="line">			postInvalidateOnAnimation();</div><div class="line">		&#125;</div><div class="line">	&#125;		</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">scrollBy</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y)</span></span>&#123;</div><div class="line">	scrollTo(mScrollX + x,mScrollY + y);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <a id="more"></a>
-<p>这里 mScrollX,mScrollY存放的是 View本身相对于 View 的内容的距离，这个距离可正可负，当 View 的内容处于 View 本身的左边时mScrollX就为正，一般我就记以 view 内容的左上角的点为原点，view位置左上角的点相对于 view 的内容原点的位置，这样子记就不容易弄错。但原理还是要知道。如图所示<br><img src="http://7xtask.com2.z0.glb.clouddn.com/view%20%E7%9A%84%E6%BB%91%E5%8A%A8.png" alt="fe"></p>
+<p>这里 mScrollX,mScrollY存放的是 View本身相对于 View 的内容的距离，这个距离可正可负，当 View 的内容处于 View 本身的左边时mScrollX就为正，一般我就记以 view 内容的左上角的点为原点，view位置左上角的点相对于 view 的内容原点的位置，这样子记就不容易弄错。但原理还是要知道。如图所示<br><img src="https://raw.githubusercontent.com/fengminchao/img/master/view.png" alt=""></p>
 <h3 id="使用动画来进行滑动"><a href="#使用动画来进行滑动" class="headerlink" title="使用动画来进行滑动"></a>使用动画来进行滑动</h3><p>这里可以使用 View 动画和属性动画进行滑动，需要注意的是：一般在动画中也会讲，View 动画只是改变了 View 的影像，也就是说当 View 移动到其他位置时就不能响应用户的点击事件（如果这是一个可响应点击事件的 View），因为 View 的本体还在原来的位置，要解决这个问题就可以使用属性动画来解决，属性动画是在 Api 11的引进的，现在也基本上绝大多数安卓手机机型在3.0以上，如果还要适配低版本的机型就可以使用Jake Wharton的开源库： nineoldandroid来实现。这里具体动画的实现就不再讲了</p>
 <h3 id="改变View的布局参数"><a href="#改变View的布局参数" class="headerlink" title="改变View的布局参数"></a>改变View的布局参数</h3><p>如果要真的实现 View 本身的移动则可以改变 View 的布局，View 的绘制过程经过三个步骤：Measure,Layout,Draw，那就可以改变 view 的布局参数再调用requestLayout函数来使得 View 重新 layout。</p>
 <h2 id="View-的事件分发机制"><a href="#View-的事件分发机制" class="headerlink" title="View 的事件分发机制"></a>View 的事件分发机制</h2><h3 id="点击事件的传递顺序"><a href="#点击事件的传递顺序" class="headerlink" title="点击事件的传递顺序"></a>点击事件的传递顺序</h3><p>任何点击事件都离不开三个重要方法：dispatchTouchEvent(),onInterceptTouchEvent(),onTouchEvent().<br>dispatchTouchEvent()用来进行事件的分发，该方法一定会被调用。<br>onInterceptTouchEvent()表示是否拦截当前触摸事件。<br>onTouchEvent用来消耗当前触摸事件，如果返回 false 则表示不消耗当前事件。<br>这三者的关系用伪代码可以 很好地表示他们之间的关系：</p>
@@ -581,7 +581,7 @@
         <div class="copyright" >
   
   &copy; 
-  <span itemprop="copyrightYear">2018</span>
+  <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

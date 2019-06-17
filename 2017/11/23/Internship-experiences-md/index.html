@@ -102,12 +102,12 @@
 <meta property="og:site_name" content="YBAO&#39;s Blog">
 <meta property="og:description" content="找了几个月的实习终于找到了实习的去处——小米互娱，做的是小米直播和米聊的业务，经过快大半年的实习，谈谈自己在这个业务部门实习的感受吧。 小米这边用的团队管理工具主要是 Atlassian 的 Confluence 和 Jira ，Confluence 主要用于团队内部的 wiki 记录，会议记录以及代码规范，api 文档，需求文档等一系列部门合作会使用参考的文档，而 Jira 主要用于 bug 的">
 <meta property="og:locale" content="en">
-<meta property="og:image" content="http://7xtask.com2.z0.glb.clouddn.com/module.png">
-<meta property="og:updated_time" content="2018-01-03T04:04:14.622Z">
+<meta property="og:image" content="https://raw.githubusercontent.com/fengminchao/img/master/module.png">
+<meta property="og:updated_time" content="2019-06-17T06:40:22.195Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="小米实习见闻">
 <meta name="twitter:description" content="找了几个月的实习终于找到了实习的去处——小米互娱，做的是小米直播和米聊的业务，经过快大半年的实习，谈谈自己在这个业务部门实习的感受吧。 小米这边用的团队管理工具主要是 Atlassian 的 Confluence 和 Jira ，Confluence 主要用于团队内部的 wiki 记录，会议记录以及代码规范，api 文档，需求文档等一系列部门合作会使用参考的文档，而 Jira 主要用于 bug 的">
-<meta name="twitter:image" content="http://7xtask.com2.z0.glb.clouddn.com/module.png">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/fengminchao/img/master/module.png">
 
 
 
@@ -357,7 +357,7 @@
 <p>小米这边用的团队管理工具主要是 Atlassian 的 Confluence 和 Jira ，Confluence 主要用于团队内部的 wiki 记录，会议记录以及代码规范，api 文档，需求文档等一系列部门合作会使用参考的文档，而 Jira 主要用于 bug 的跟踪管理。公司内部的邮件我们开发组收到的主要是用户量分布，留存率，请求接口的日成功率，视频的推拉流状况，新的需求，设计稿邮件等，基本上每天来公司第一件事情就是看邮件，看自己头上有什么任务，然后安排下就开始工作了。</p>
 <p>再说下各组间协作的流程：首先是产品经理提出需求，然后客户端老大，产品经理老大，项目经理会对每一期的需求进行评审（每一期就是产品的一个小版本的上线间隔时间：大概一到两个星期），评审通过决定要在下一个版本加进这个需求后开始安排人员进行设计，协定接口等一系统工作，首先提出需求的产品和设计师，客户端开发，后台开发会对这个需求进行讨论评估好工期，对需求的细节方面做些评估完善，约定好接口，通常这时候产品是已经给出了原型图的，所以客户端根据原型图就能大概评估出需要多少时间来开发。接着设计师开始出设计稿和切图，客户端根据约定好的接口开始开发，通常后台那边开发好后会先上 测试环境下的接口，再上正式环境下的接口，正式环境的上线他们有个规范的上线流程和紧急情况下的处理措施。设计师那边全部都用 sketch 出图，通过插件将 sketch 导出为 html 文件发送邮件给客户端，客户端开发好后现在测试环境下测试，自测通过后交给产品和设计验收，验收通过即可提交给测试组测试。测试组这时候如果在你的模块下测出 bug 就会在 Jira 上提出 bug，在上线前你头上所有优先级高的 bug 都得修复完毕才能上线。</p>
 <a id="more"></a>
-<p>接下来说说 Android 端直播的客户端架构<br><img src="http://7xtask.com2.z0.glb.clouddn.com/module.png" alt=""><br>在较为成熟的公司做开发的好处就是挺多内部的工具，sdk，UI 组件可以直接拿来用，而不用再重新去开发以及维护，所以开发一款 app 的成本并不是太大。网络库 milink 主要用途是保持长连接和接收服务器的推送，在 MIUI9 系统上因为对 app 后台运行管控较严所以逐渐使用 mipush 来做 app 未在后台运行时的推送。直播应该用中图片和送礼动图用到很多，因此很容易发生 OOM ，就用了 fresco 来对图片的加载作统一管理，在图片打包时还会用图片压缩工具对 png 图片进行压缩，礼物动图通常用 webp 来做，压缩率较高以及支持动图。data 层主要存放的是数据库存储的数据结构以及网络请求中用到的数据结构，和后台交互选了 Google 的 Protocol Buffers 这种数据格式，传输体积小，效率高，但是可读性不高，感觉在自己的项目中用 json 来做就可以了，简单易用而且有挺多的转换库供选择。engine 模块不属于我们客户端维护，是有一个专门维护引擎的开发组来做。common 库主要是对下层库的封装，livecommon 层则是对其下层库在业务开发使用上进行封装。UI 组件则直接引入了 MIUI 的组件。</p>
+<p>接下来说说 Android 端直播的客户端架构<br><img src="https://raw.githubusercontent.com/fengminchao/img/master/module.png" alt=""><br>在较为成熟的公司做开发的好处就是挺多内部的工具，sdk，UI 组件可以直接拿来用，而不用再重新去开发以及维护，所以开发一款 app 的成本并不是太大。网络库 milink 主要用途是保持长连接和接收服务器的推送，在 MIUI9 系统上因为对 app 后台运行管控较严所以逐渐使用 mipush 来做 app 未在后台运行时的推送。直播应该用中图片和送礼动图用到很多，因此很容易发生 OOM ，就用了 fresco 来对图片的加载作统一管理，在图片打包时还会用图片压缩工具对 png 图片进行压缩，礼物动图通常用 webp 来做，压缩率较高以及支持动图。data 层主要存放的是数据库存储的数据结构以及网络请求中用到的数据结构，和后台交互选了 Google 的 Protocol Buffers 这种数据格式，传输体积小，效率高，但是可读性不高，感觉在自己的项目中用 json 来做就可以了，简单易用而且有挺多的转换库供选择。engine 模块不属于我们客户端维护，是有一个专门维护引擎的开发组来做。common 库主要是对下层库的封装，livecommon 层则是对其下层库在业务开发使用上进行封装。UI 组件则直接引入了 MIUI 的组件。</p>
 <p>再就是一些规范性的问题，我们组内有代码风格规范的 wiki，平时开发的时候要对照着上面的规范进行编码，实习期间导师会对你提交的代码做 code review，以及提交的时候要写清楚自己提交的代码是属于什么性质的修改（功能，ui，bugfix，优化。。。），修改的具体内容，修改影响到的模块。每天傍晚都会打个包发给项目组的人员，测试就会对照上面的提交日志进行相应的测试。开发新的功能或做优化时都会新开个分支来开发，直到测试没有问题后才会合进主分支。基本上每周周会都会对这些规范进行强调，老大也会定期 review 我们的代码指出不规范的地方，不按照规范编码经常会导致一些问题的出现，比如内存泄漏，直播 app 本身占用内存就比较大，再出现内存泄漏在低端机上会频繁 GC 引起卡顿。</p>
 
       
@@ -555,7 +555,7 @@
         <div class="copyright" >
   
   &copy; 
-  <span itemprop="copyrightYear">2018</span>
+  <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
