@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="android," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="这篇文章主要想记录一下在排查线上 OOM 问题时的分析思路和解决方案，同时思考了如何优化监控 Android 应用的内存。 线上 OOM 问题案例目前维护的应用主要存在两类 OOM 问题 1.创建线程时抛出 OOM 异常（只出现在华为手机上，华为手机对应用可创建的最大线程数做了约束）12345678java.lang.OutOfMemoryError: pthread_create (1040KB">
+<meta name="keywords" content="android">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android 内存优化实践">
+<meta property="og:url" content="http://fengminchao.github.io/2019/08/08/Android-内存优化实践/index.html">
+<meta property="og:site_name" content="YBAO&#39;s Blog">
+<meta property="og:description" content="这篇文章主要想记录一下在排查线上 OOM 问题时的分析思路和解决方案，同时思考了如何优化监控 Android 应用的内存。 线上 OOM 问题案例目前维护的应用主要存在两类 OOM 问题 1.创建线程时抛出 OOM 异常（只出现在华为手机上，华为手机对应用可创建的最大线程数做了约束）12345678java.lang.OutOfMemoryError: pthread_create (1040KB">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2019-08-09T07:10:29.585Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android 内存优化实践">
+<meta name="twitter:description" content="这篇文章主要想记录一下在排查线上 OOM 问题时的分析思路和解决方案，同时思考了如何优化监控 Android 应用的内存。 线上 OOM 问题案例目前维护的应用主要存在两类 OOM 问题 1.创建线程时抛出 OOM 异常（只出现在华为手机上，华为手机对应用可创建的最大线程数做了约束）12345678java.lang.OutOfMemoryError: pthread_create (1040KB">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"right","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://fengminchao.github.io/2019/08/08/Android-内存优化实践/"/>
+
+
+
+
+
+  <title>Android 内存优化实践 | YBAO's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">YBAO's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://fengminchao.github.io/2019/08/08/Android-内存优化实践/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="ybao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://avatars1.githubusercontent.com/u/14356334?v=4&s=460">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="YBAO's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Android 内存优化实践</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-08-08T17:14:44+08:00">
+                2019-08-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/08/08/Android-内存优化实践/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2019/08/08/Android-内存优化实践/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>这篇文章主要想记录一下在排查线上 OOM 问题时的分析思路和解决方案，同时思考了如何优化监控 Android 应用的内存。</p>
+<h2 id="线上-OOM-问题案例"><a href="#线上-OOM-问题案例" class="headerlink" title="线上 OOM 问题案例"></a>线上 OOM 问题案例</h2><p>目前维护的应用主要存在两类 OOM 问题</p>
+<p>1.创建线程时抛出 OOM 异常（只出现在华为手机上，华为手机对应用可创建的最大线程数做了约束）<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">java.lang.OutOfMemoryError: pthread_create (<span class="number">1040</span>KB stack) failed: Out of memory</div><div class="line">at java.lang.Thread.nativeCreate(Native Method)</div><div class="line">at java.lang.Thread.start(Thread.java:<span class="number">753</span>)</div><div class="line">at java.util.concurrent.ThreadPoolExecutor.addWorker(ThreadPoolExecutor.java:<span class="number">970</span>)</div><div class="line">at java.util.concurrent.ThreadPoolExecutor.processWorkerExit(ThreadPoolExecutor.java:<span class="number">1038</span>)</div><div class="line">at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:<span class="number">1180</span>)</div><div class="line">at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:<span class="number">636</span>)</div><div class="line">at java.lang.Thread.run(Thread.java:<span class="number">784</span>)</div></pre></td></tr></table></figure></p>
+<p>2.Fresco 加载图片申请内存时虚拟机内存不足<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">java.lang.OutOfMemoryError: Failed to allocate a <span class="number">1821612</span> <span class="keyword">byte</span> allocation with <span class="number">1218096</span> free bytes and <span class="number">1189</span>KB until OOM</div><div class="line">at dalvik.system.VMRuntime.newNonMovableArray(Native Method)</div><div class="line">at android.graphics.Bitmap.nativeCreate(Native Method)</div><div class="line">at android.graphics.Bitmap.createBitmap(Bitmap.java:<span class="number">825</span>)</div><div class="line">at android.graphics.Bitmap.createBitmap(Bitmap.java:<span class="number">802</span>)</div><div class="line">at android.graphics.Bitmap.createBitmap(Bitmap.java:<span class="number">769</span>)</div><div class="line">at com.facebook.imagepipeline.memory.e.i(BitmapPool.java:<span class="number">51</span>)</div><div class="line">at com.facebook.imagepipeline.memory.e.b(BitmapPool.java:<span class="number">26</span>)</div><div class="line">at com.facebook.imagepipeline.memory.a.a(BasePool.java:<span class="number">259</span>)</div><div class="line">at com.facebook.imagepipeline.b.a.a(ArtBitmapFactory.java:<span class="number">48</span>)</div><div class="line">at com.facebook.imagepipeline.b.f.a(PlatformBitmapFactory.java:<span class="number">74</span>)</div><div class="line">at com.facebook.imagepipeline.b.f.b(PlatformBitmapFactory.java:<span class="number">41</span>)</div><div class="line">at com.facebook.fresco.animation.b.b.c$a.a(DefaultBitmapFramePreparer.java:<span class="number">143</span>)</div><div class="line">at com.facebook.fresco.animation.b.b.c$a.a(DefaultBitmapFramePreparer.java:<span class="number">167</span>)</div><div class="line">at com.facebook.fresco.animation.b.b.c$a.run(DefaultBitmapFramePreparer.java:<span class="number">110</span>)</div><div class="line">at com.facebook.common.b.b$a.run(ConstrainedExecutorService.java:<span class="number">175</span>)</div><div class="line">at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:<span class="number">1112</span>)</div><div class="line">at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:<span class="number">587</span>)</div><div class="line">at com.facebook.imagepipeline.e.p.run(PriorityThreadFactory.java:<span class="number">51</span>)</div><div class="line">at java.lang.Thread.run(Thread.java:<span class="number">818</span>)</div></pre></td></tr></table></figure></p>
+<a id="more"></a>
+<h2 id="问题排查解决"><a href="#问题排查解决" class="headerlink" title="问题排查解决"></a>问题排查解决</h2><p>第一个创建线程过多导致 OOM 只存在于华为手机上，网上已经有人碰到，参考这篇文章：<a href="https://www.jianshu.com/p/e574f0ffdb42" target="_blank" rel="external">不可思议的OOM</a>。可以通过Android Studio 的 Profiler 中 CPU 状况来查看应用当前所有的线程列表，或者使用命令<strong>adb shell ps -T -p pid</strong> 查看对应进程的所有线程信息。发现项目中存在大量的常驻线程，如 RxJava 内的线程池，Fresco 内部的线程池，合作方 sdk 内部的线程池，各种单线程池以及应用本身定义的线程池，所以得想办法把这些线程池复用为应用自身定义的线程池来减少线程数，同时需要考虑更改应用自己定义的线程池的策略来兼容 RxJava 的线程池，以及满足合作方 sdk 内线程池的需求。RxJava中存在一些延时和间隔执行任务的操作，这些操作是放到计算线程池执行的，它的线程池实现是ScheduledThreadPoolExecutor，所以原先应用内的计算线程池需要继承自可定时执行任务的线程池。合作方sdk内部的线程池则需要推动他们提供接口设置线程池。还有部分代码是通过直接 <strong>new Thread</strong>的方式来创建线程，这些代码也需要修改优化，一些业务模块中则是直接自己用单线程池，猜测当时可能是为了方便开发，不用考虑线程安全问题以及可以直接终止线程池来使所有任务中断退出，但这也导致了应用多出了很多活跃度不高的线程，同时应用线程池也没得到充分的利用。在优化完一般情况下的线程数之后，还需要监控在短期内是否存在代码频繁创建线程的逻辑，可以使用 PLTHook 技术在native层获取线程创建的堆栈，具体实现代码可以参考<a href="https://github.com/AndroidAdvanceWithGeektime/Chapter06-plus" target="_blank" rel="external">这个仓库</a>。</p>
+<p>第二个问题是加载图片时没有足够的内存可供分配，这个分析起来比较复杂，这类问题主要出现在 5.X 系统上，而且出现问题的机型大部分是是内存较小但分辨率较高的手机，在较高的系统版本如 Android 8.0 之后图片的 Bitmap 引用在 Java 层，实际字节数组在 native 层减少了 Java 层的内存压力。出现这个问题有可能是其他大对象占用内存过多，有可能是内存中存在内存占用较大的 Bitmap ，可以用 MAT 分析应用 Java 层内存占用情况，找出可疑的大对象进行优化。</p>
+<p>dump 出内存进行分析后发现 sdk 内部有几个对象的内存占用较大,而且当时 sdk 并没有被使用，却一直在后台占用内存，这几个对象内部有很大的集合对象和字符串对象，需要跟对应的 sdk 开发团队沟通优化。还可以分析图片 byte 数组的占用内存情况，毕竟图片是内存消耗大户。分析发现某些高分辨率图片在 dump 内存时处于隐藏状态，而且也不频繁显示，或者是上一个页面的图片，这些图片有些可以通过查看 byte 数组被哪个对象引用来找出对应的位置，有些是通过 fresco 加载，这时候可以把 byte 数组保存为.rgba文件，用 ImageMagick 工具转换为 png 格式的文件来查看具体是哪张图片。对于这种不经常显示的图片可以更改渲染策略：只在图片可见时设置对应 View 的图片资源。还有图片是在放置资源文件时放置错了，1080p 分辨率下的图片放到了 drawable 目录下面，这将会导致图片渲染出来占用的内存是放到正确目录下的 9 倍！具体图片内存占用大小计算可以看<a href="https://juejin.im/post/5bc406b9f265da0aa664ea1e" target="_blank" rel="external">这篇文章</a>。</p>
+<p>在优化完占用内存过大的对象和图片后还需要通过版本迭代来验证优化是否有效，同时我们也想知道在发生 OOM 时的内存占用情况，如果在外发版本发生 OOM 崩溃时去 dump 应用的内存可能会导致二次 OOM ，让应用一直处于黑屏状态，影响用户体验，但是可以在线下测试的时候 dump 应用内存来分析 OOM 时的内存占用情况。同时可以监控应用内部的大图加载，在发生 OOM 时把内存占用大于 1M 的图片上报上来，方便后期针对性地优化。</p>
+<h2 id="编码建议"><a href="#编码建议" class="headerlink" title="编码建议"></a>编码建议</h2><p>在分析完上述 OOM 问题后想总结下平时编码时减少内存占用的一些建议<br>1.应用内部提供统一的线程池管理，配置 sdk 的线程池为自己应用内部的线程池减少线程数，所有其他需要在子线程执行的任务都交由线程池执行，在编码过程中保证自己写的类线程安全。<br>2.针对高分辨率的图片考虑在使用不频繁且它不可见时及时释放掉或者移除对应的 View。<br>3.异步任务执行在 Activity 或 Fragment 被销毁时需及时中断执行， RxJava 在创建 Observable 时内部的匿名内部类在页面退出时解除订阅只能取消订阅者内部对外部类的引用，如果 Observable 内部任务没执行完还是会继续持有外部类的引用导致内存泄漏，需要用静态类或外部类包装或者使用静态方法来创建 Observable ，对于需要在页面退出还能执行的任务用静态类或外部类包装。</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a href="https://www.jianshu.com/p/d5714e8987f3" target="_blank" rel="external">Android Bitmap变迁与原理解析（4.x-8.x）</a></li>
+<li><a href="https://blog.csdn.net/chenzhiqin20/article/details/51241249" target="_blank" rel="external">查看MAT中的bitmap</a></li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/android/" rel="tag"># android</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/05/26/常用的编码方式——Base64编码和Hex编码/" rel="next" title="常用的编码方式——Base64编码和Hex编码">
+                <i class="fa fa-chevron-left"></i> 常用的编码方式——Base64编码和Hex编码
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="https://avatars1.githubusercontent.com/u/14356334?v=4&s=460"
+               alt="ybao" />
+          <p class="site-author-name" itemprop="name">ybao</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">12</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/fengminchao" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                    
+                      GitHub
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/5258752805/profile?topnav=1&wvr=6" target="_blank" title="微博">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                    
+                      微博
+                    
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#线上-OOM-问题案例"><span class="nav-number">1.</span> <span class="nav-text">线上 OOM 问题案例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#问题排查解决"><span class="nav-number">2.</span> <span class="nav-text">问题排查解决</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#编码建议"><span class="nav-number">3.</span> <span class="nav-text">编码建议</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">4.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">ybao</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://ybao.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://fengminchao.github.io/2019/08/08/Android-内存优化实践/';
+          this.page.identifier = '2019/08/08/Android-内存优化实践/';
+          this.page.title = 'Android 内存优化实践';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://ybao.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

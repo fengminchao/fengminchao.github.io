@@ -270,6 +270,144 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://fengminchao.github.io/2019/08/08/Android-内存优化实践/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="ybao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://avatars1.githubusercontent.com/u/14356334?v=4&s=460">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="YBAO's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/08/08/Android-内存优化实践/" itemprop="url">Android 内存优化实践</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-08-08T17:14:44+08:00">
+                2019-08-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/08/08/Android-内存优化实践/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2019/08/08/Android-内存优化实践/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p>这篇文章主要想记录一下在排查线上 OOM 问题时的分析思路和解决方案，同时思考了如何优化监控 Android 应用的内存。</p>
+<h2 id="线上-OOM-问题案例"><a href="#线上-OOM-问题案例" class="headerlink" title="线上 OOM 问题案例"></a>线上 OOM 问题案例</h2><p>目前维护的应用主要存在两类 OOM 问题</p>
+<p>1.创建线程时抛出 OOM 异常（只出现在华为手机上，华为手机对应用可创建的最大线程数做了约束）<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">java.lang.OutOfMemoryError: pthread_create (<span class="number">1040</span>KB stack) failed: Out of memory</div><div class="line">at java.lang.Thread.nativeCreate(Native Method)</div><div class="line">at java.lang.Thread.start(Thread.java:<span class="number">753</span>)</div><div class="line">at java.util.concurrent.ThreadPoolExecutor.addWorker(ThreadPoolExecutor.java:<span class="number">970</span>)</div><div class="line">at java.util.concurrent.ThreadPoolExecutor.processWorkerExit(ThreadPoolExecutor.java:<span class="number">1038</span>)</div><div class="line">at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:<span class="number">1180</span>)</div><div class="line">at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:<span class="number">636</span>)</div><div class="line">at java.lang.Thread.run(Thread.java:<span class="number">784</span>)</div></pre></td></tr></table></figure></p>
+<p>2.Fresco 加载图片申请内存时虚拟机内存不足<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">java.lang.OutOfMemoryError: Failed to allocate a <span class="number">1821612</span> <span class="keyword">byte</span> allocation with <span class="number">1218096</span> free bytes and <span class="number">1189</span>KB until OOM</div><div class="line">at dalvik.system.VMRuntime.newNonMovableArray(Native Method)</div><div class="line">at android.graphics.Bitmap.nativeCreate(Native Method)</div><div class="line">at android.graphics.Bitmap.createBitmap(Bitmap.java:<span class="number">825</span>)</div><div class="line">at android.graphics.Bitmap.createBitmap(Bitmap.java:<span class="number">802</span>)</div><div class="line">at android.graphics.Bitmap.createBitmap(Bitmap.java:<span class="number">769</span>)</div><div class="line">at com.facebook.imagepipeline.memory.e.i(BitmapPool.java:<span class="number">51</span>)</div><div class="line">at com.facebook.imagepipeline.memory.e.b(BitmapPool.java:<span class="number">26</span>)</div><div class="line">at com.facebook.imagepipeline.memory.a.a(BasePool.java:<span class="number">259</span>)</div><div class="line">at com.facebook.imagepipeline.b.a.a(ArtBitmapFactory.java:<span class="number">48</span>)</div><div class="line">at com.facebook.imagepipeline.b.f.a(PlatformBitmapFactory.java:<span class="number">74</span>)</div><div class="line">at com.facebook.imagepipeline.b.f.b(PlatformBitmapFactory.java:<span class="number">41</span>)</div><div class="line">at com.facebook.fresco.animation.b.b.c$a.a(DefaultBitmapFramePreparer.java:<span class="number">143</span>)</div><div class="line">at com.facebook.fresco.animation.b.b.c$a.a(DefaultBitmapFramePreparer.java:<span class="number">167</span>)</div><div class="line">at com.facebook.fresco.animation.b.b.c$a.run(DefaultBitmapFramePreparer.java:<span class="number">110</span>)</div><div class="line">at com.facebook.common.b.b$a.run(ConstrainedExecutorService.java:<span class="number">175</span>)</div><div class="line">at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:<span class="number">1112</span>)</div><div class="line">at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:<span class="number">587</span>)</div><div class="line">at com.facebook.imagepipeline.e.p.run(PriorityThreadFactory.java:<span class="number">51</span>)</div><div class="line">at java.lang.Thread.run(Thread.java:<span class="number">818</span>)</div></pre></td></tr></table></figure></p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2019/08/08/Android-内存优化实践/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://fengminchao.github.io/2018/05/26/常用的编码方式——Base64编码和Hex编码/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1511,148 +1649,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://fengminchao.github.io/2016/08/31/ccnubox-problem-summary/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="ybao">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://avatars1.githubusercontent.com/u/14356334?v=4&s=460">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="YBAO's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/08/31/ccnubox-problem-summary/" itemprop="url">校园通问题总结</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-08-31T12:11:17+08:00">
-                2016-08-31
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2016/08/31/ccnubox-problem-summary/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2016/08/31/ccnubox-problem-summary/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>花了几个月的时间写校园通–华师匣子，在写的过程中碰到了一些问题，有些比较常见，所以就写个博客总结下在做项目过程中碰到的问题。后续随着版本的更新还会补充。</p>
-<h2 id="1-view相关"><a href="#1-view相关" class="headerlink" title="1.view相关"></a>1.view相关</h2><p>Q:Toolbar 有时候会出现 navigationicon不会居中的情况<br>A:这时后要设置Toolbar 的minHeight 和layout_height相同, Toolbar 控件的文档里面说明了这种情况。</p>
-<blockquote>
-<p>Toolbar supports a more focused feature set than ActionBar. From start to end, a toolbar may contain a combination of the following optional elements:A navigation button…..<strong>The navigation button is vertically aligned within the Toolbar’s minimum height, if set.</strong></p>
-</blockquote>
-<p>Q:如何动态更新 menu<br>A:在 onPrepareOptionMenu中写上相应的显示逻辑，这个方法是在每次展现menu时调用。</p>
-<p>Q:当登录页有背景大图时，为了让输入框不被键盘挡住会把windowSoftInputMode设置为adjustResize，但这样直接放背景图时会被压缩。<br>A:较好的解决办法有两种。<br>如果是全屏背景则直接把加入下面一行代码  </p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">getWindow().setBackgroundDrawable();</div></pre></td></tr></table></figure>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2016/08/31/ccnubox-problem-summary/#more" rel="contents">
-              Read more &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1703,7 +1699,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">11</span>
+                <span class="site-state-item-count">12</span>
                 <span class="site-state-item-name">posts</span>
               </a>
             </div>

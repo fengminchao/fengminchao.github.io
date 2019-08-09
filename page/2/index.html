@@ -270,6 +270,148 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://fengminchao.github.io/2016/08/31/ccnubox-problem-summary/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="ybao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://avatars1.githubusercontent.com/u/14356334?v=4&s=460">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="YBAO's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/08/31/ccnubox-problem-summary/" itemprop="url">校园通问题总结</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-08-31T12:11:17+08:00">
+                2016-08-31
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2016/08/31/ccnubox-problem-summary/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2016/08/31/ccnubox-problem-summary/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p>花了几个月的时间写校园通–华师匣子，在写的过程中碰到了一些问题，有些比较常见，所以就写个博客总结下在做项目过程中碰到的问题。后续随着版本的更新还会补充。</p>
+<h2 id="1-view相关"><a href="#1-view相关" class="headerlink" title="1.view相关"></a>1.view相关</h2><p>Q:Toolbar 有时候会出现 navigationicon不会居中的情况<br>A:这时后要设置Toolbar 的minHeight 和layout_height相同, Toolbar 控件的文档里面说明了这种情况。</p>
+<blockquote>
+<p>Toolbar supports a more focused feature set than ActionBar. From start to end, a toolbar may contain a combination of the following optional elements:A navigation button…..<strong>The navigation button is vertically aligned within the Toolbar’s minimum height, if set.</strong></p>
+</blockquote>
+<p>Q:如何动态更新 menu<br>A:在 onPrepareOptionMenu中写上相应的显示逻辑，这个方法是在每次展现menu时调用。</p>
+<p>Q:当登录页有背景大图时，为了让输入框不被键盘挡住会把windowSoftInputMode设置为adjustResize，但这样直接放背景图时会被压缩。<br>A:较好的解决办法有两种。<br>如果是全屏背景则直接把加入下面一行代码  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">getWindow().setBackgroundDrawable();</div></pre></td></tr></table></figure>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2016/08/31/ccnubox-problem-summary/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://fengminchao.github.io/2016/06/17/view的滑动与事件分发/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -443,7 +585,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">11</span>
+                <span class="site-state-item-count">12</span>
                 <span class="site-state-item-name">posts</span>
               </a>
             </div>
